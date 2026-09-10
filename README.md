@@ -89,4 +89,6 @@ npx prisma generate
 
 ## Deployment
 
-Not yet configured. Once ready, this will follow the single-container pattern used by other apps in this homeserver (see the repo root `README.md`) — a `docker-compose.yml` and `Dockerfile` alongside this `app/` directory, deployed behind the shared Nginx/Cloudflare Tunnel setup.
+Single-container pattern matching the other apps in this homeserver (see the repo root `README.md`). This directory has the `Dockerfile`; the compose file, `deploy.sh`, and `update-env.sh` live one level up at `apps/clipmap/` in the parent `homeserver` repo. Served at [clipmap.fahmiefendy.dev](https://clipmap.fahmiefendy.dev) behind the shared Nginx/Cloudflare Tunnel setup.
+
+Not yet fully live: no GitHub Actions workflow publishes the image to GHCR yet, and the Cloudflare Tunnel route needs confirming (see `docs/TODO.md`).

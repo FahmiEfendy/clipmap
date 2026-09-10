@@ -1,6 +1,6 @@
 # Clipmap — Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project will be documented in this file — technical detail, dependencies, bug fixes, and what's been verified live vs. not. For a short, public-facing summary per release, see [RELEASE_NOTES.md](RELEASE_NOTES.md).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
