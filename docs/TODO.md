@@ -2,12 +2,9 @@
 
 ## 🔴 Critical (v1 foundation)
 
-- [ ] Build "paste TikTok URL" input + save flow
-- [ ] TikTok page fetch + embedded JSON parsing (caption, hashtags, POI tag, cover images)
-- [ ] Google Places API integration (Find Place + Text Search)
-- [ ] OpenRouter integration — vision LLM extraction (caption + hashtags + cover images)
-- [ ] Confidence-based confirm screen (prefilled vs. empty state + Places Autocomplete)
-- [ ] "View on Google Maps" button (Place ID deep link, no Maps SDK needed)
+- [ ] Verify the extraction pipeline live once `OPENROUTER_API_KEY`, `GOOGLE_PLACES_API_KEY`, and `OPENROUTER_VISION_MODEL` are set — built and data-layer tested, but never run against a real TikTok URL/LLM call
+- [ ] Verify TikTok's POI/location-tag field name against a real POI-tagged video once deployed — the field name in `src/lib/tiktok.ts` is a best-effort guess (see code comment); TikTok's WAF blocks this from being tested from a sandboxed environment
+- [ ] Add a Google Places Autocomplete widget for the low/no-confidence manual-entry state (currently a plain text address field, no search-assist yet)
 - [ ] Dockerfile + docker-compose for self-hosted deployment
 
 ## 🟡 Medium (core v1 features)

@@ -31,4 +31,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    // The default JWT session strategy only carries name/email/image — user.id
+    // has to be copied onto the token (at sign-in) and back onto the session
+    // (on every request) explicitly, or session.user.id is always undefined.
+    async jwt({ token, user }) {
+      if (user) token.id = user.id;
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) session.user.id = token.id as string;
+      return session;
+    },
+  },
 });
