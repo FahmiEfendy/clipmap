@@ -5,7 +5,8 @@
 - [ ] Verify the extraction pipeline live once `OPENROUTER_API_KEY`, `GOOGLE_PLACES_API_KEY`, and `OPENROUTER_VISION_MODEL` are set — built and data-layer tested, but never run against a real TikTok URL/LLM call
 - [ ] Verify TikTok's POI/location-tag field name against a real POI-tagged video once deployed — the field name in `src/lib/tiktok.ts` is a best-effort guess (see code comment); TikTok's WAF blocks this from being tested from a sandboxed environment
 - [ ] Add a Google Places Autocomplete widget for the low/no-confidence manual-entry state (currently a plain text address field, no search-assist yet)
-- [ ] Dockerfile + docker-compose for self-hosted deployment
+- [ ] Add a GitHub Actions workflow to build + push the image to GHCR (`ghcr.io/fahmiefendy/clipmap`) — `apps/clipmap/docker-compose.yml` expects that image and there's no CI yet (repo already exists at github.com/FahmiEfendy/clipmap)
+- [ ] Confirm the Cloudflare Tunnel route for `clipmap.fahmiefendy.dev` → `http://localhost:80` is added in the dashboard (Zero Trust → Networks → Tunnels → homeserver → Routes) — routing there isn't config-file-managed, so it can't be verified from this repo
 
 ## 🟡 Medium (core v1 features)
 
@@ -36,6 +37,5 @@
 - [ ] Full page/screen list (Home/feed, Add, Place detail, Lists, Search, Settings, Auth)
 - [ ] Explicit v1 out-of-scope list
 - [ ] Grafana alert notification channel (email / Slack / Discord?)
-- [ ] Subdomain for deployment (`places.` is already taken by Your Places)
 - [ ] PostGIS enablement path — switch the shared `db-postgres` to `postgis/postgis` (affects Electricity Tracker too) vs. a dedicated instance just for Clipmap, once "near me" search is actually being built
 - [ ] Real Google OAuth credentials for `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET`

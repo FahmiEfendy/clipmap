@@ -28,6 +28,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - "Paste TikTok URL" add-place flow (`/add`) — confidence-based confirm screen (prefilled for HIGH/MEDIUM, manual entry for LOW/NONE), save action, "View on Google Maps" link built from the Google Place ID
 - Home page (`/`) listing the signed-in user's saved places
 - Minimal email/password signup and login pages, needed to exercise the add-place flow end to end (`Place.userId` is required)
+- Deployment config matching the `electricity-tracker` pattern: `app/Dockerfile` (multi-stage, standalone Next.js output, non-root user), `app/docker-entrypoint.sh` (runs `prisma migrate deploy` before starting the server), `apps/clipmap/docker-compose.yml`, `deploy.sh`, `update-env.sh`. `next.config.ts` now sets `output: "standalone"`, required for the Docker build.
+- Subdomain decided and nginx reverse-proxy config added (`infra/nginx/conf.d/clipmap.conf`, → `clipmap-app:3000`) for `clipmap.fahmiefendy.dev`; documented in the root `README.md`, `docs/cloudflare/DNS.md`, and `docs/cloudflare/TUNNEL.md`. The Cloudflare Tunnel route itself is dashboard-managed and still needs confirming — see `docs/TODO.md`.
 
 ### Notes
 - PostGIS was deliberately left out of this migration — the shared `db-postgres` instance runs plain `postgres:17-alpine`, which doesn't bundle the extension. Deferred until "near me" search is actually built; see `docs/TODO.md`.
@@ -35,6 +37,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Verified live: the full signup → session cookie → auth-gated page flow, and a `Place` create/read against the real database (`@prisma/adapter-pg` + `@prisma/client`) — both by directly exercising the running dev server and the Prisma client, since no browser automation was available this session.
 - **Not verified live:** the TikTok page-fetch, OpenRouter, and Google Places calls — no API keys were available yet. This environment's outbound requests to TikTok are also WAF-blocked (bot challenge page, no real content), so even the fetch step needs testing from the homeserver's own network, not from here.
 - The TikTok POI/location-tag field name (`itemStruct.poiInfo`/`.anchors`) is an educated guess based on published scraping references, not confirmed against a live page — see the comment in `src/lib/tiktok.ts`.
+- The Docker image was built and run locally against the real homeserver database (via the SSH tunnel) — `docker-entrypoint.sh` correctly ran `prisma migrate deploy` and the app served `200` on `/`. **Not yet verified:** actually deploying through `docker-compose.yml` behind the homeserver's Nginx/Cloudflare Tunnel — there's no GHCR image published yet (no CI, no GitHub repo for this project so far) and no subdomain/nginx route decided.
 
 ---
 
