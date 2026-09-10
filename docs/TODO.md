@@ -2,10 +2,6 @@
 
 ## 🔴 Critical (v1 foundation)
 
-- [x] Initialize Next.js (App Router, TypeScript) project — Next.js 16, Tailwind, ESLint flat config
-- [x] Set up PostgreSQL, connect via Prisma — Prisma 7 with `@prisma/adapter-pg` driver adapter, running against the homeserver's shared `db-postgres` in a dedicated `clipmap` database (PostGIS deferred, see Decisions below)
-- [x] Define Prisma schema: `User`, `Place`, `List`, `Tag` (with `confidenceTier`, `sourceTier` fields) — plus `Account`/`Session`/`VerificationToken` for Auth.js, and `ListPlace`/`PlaceTag` join tables
-- [x] Set up Auth.js (NextAuth v5 beta) — Google OAuth + email/password credentials providers wired in `src/auth.ts`; still need real Google Cloud OAuth credentials (`AUTH_GOOGLE_ID`/`AUTH_GOOGLE_SECRET`)
 - [ ] Build "paste TikTok URL" input + save flow
 - [ ] TikTok page fetch + embedded JSON parsing (caption, hashtags, POI tag, cover images)
 - [ ] Google Places API integration (Find Place + Text Search)
@@ -39,7 +35,7 @@
 
 ## 📋 Decisions still needed
 
-- [ ] Branding (logo, exact color values) — product name decided: **Clipmap**
+- [ ] Branding (logo, exact color values)
 - [ ] Full page/screen list (Home/feed, Add, Place detail, Lists, Search, Settings, Auth)
 - [ ] Explicit v1 out-of-scope list
 - [ ] Grafana alert notification channel (email / Slack / Discord?)
