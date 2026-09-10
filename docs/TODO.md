@@ -2,10 +2,10 @@
 
 ## 🔴 Critical (v1 foundation)
 
-- [ ] Initialize Next.js (App Router, TypeScript) project
-- [ ] Set up PostgreSQL + PostGIS, connect via Prisma
-- [ ] Define Prisma schema: `User`, `Place`, `List`, `Tag` (with `confidenceTier`, `sourceTier` fields)
-- [ ] Set up Auth.js (NextAuth v5) — email/password + Google OAuth (create Google Cloud OAuth credentials)
+- [x] Initialize Next.js (App Router, TypeScript) project — Next.js 16, Tailwind, ESLint flat config
+- [x] Set up PostgreSQL, connect via Prisma — Prisma 7 with `@prisma/adapter-pg` driver adapter, running against the homeserver's shared `db-postgres` in a dedicated `clipmap` database (PostGIS deferred, see Decisions below)
+- [x] Define Prisma schema: `User`, `Place`, `List`, `Tag` (with `confidenceTier`, `sourceTier` fields) — plus `Account`/`Session`/`VerificationToken` for Auth.js, and `ListPlace`/`PlaceTag` join tables
+- [x] Set up Auth.js (NextAuth v5 beta) — Google OAuth + email/password credentials providers wired in `src/auth.ts`; still need real Google Cloud OAuth credentials (`AUTH_GOOGLE_ID`/`AUTH_GOOGLE_SECRET`)
 - [ ] Build "paste TikTok URL" input + save flow
 - [ ] TikTok page fetch + embedded JSON parsing (caption, hashtags, POI tag, cover images)
 - [ ] Google Places API integration (Find Place + Text Search)
@@ -44,3 +44,5 @@
 - [ ] Explicit v1 out-of-scope list
 - [ ] Grafana alert notification channel (email / Slack / Discord?)
 - [ ] Subdomain for deployment (`places.` is already taken by Your Places)
+- [ ] PostGIS enablement path — switch the shared `db-postgres` to `postgis/postgis` (affects Electricity Tracker too) vs. a dedicated instance just for Clipmap, once "near me" search is actually being built
+- [ ] Real Google OAuth credentials for `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET`
