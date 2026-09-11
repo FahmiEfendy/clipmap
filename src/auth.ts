@@ -10,6 +10,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   // Credentials sign-in can't use database sessions, so the whole app runs on JWT sessions.
   session: { strategy: "jwt" },
+  // The container only ever sees requests as http://127.0.0.1:3000 — Nginx
+  // and Cloudflare Tunnel sit in front of it. Auth.js refuses to trust a
+  // forwarded Host header by default (host-header-injection protection),
+  // so without this every auth request is rejected as UntrustedHost.
+  trustHost: true,
   // Without this, Auth.js falls back to its own generic built-in sign-in/error
   // page for flows it can't hand back to a custom form (e.g. an OAuth error) —
   // which looks nothing like the rest of the app. Route everything through
