@@ -2,9 +2,8 @@
 
 ## 🔴 Critical (v1 foundation)
 
-- [ ] Verify TikTok's POI/location-tag field name against a real POI-tagged video once deployed — the field name in `src/lib/tiktok.ts` is a best-effort guess (see code comment); TikTok's WAF blocks this from being tested from a sandboxed environment
+- [ ] Verify TikTok's POI/location-tag field name against a real POI-tagged video now that it's deployed — the field name in `src/lib/tiktok.ts` is a best-effort guess (see code comment); TikTok's WAF blocks this from being tested from a sandboxed environment
 - [ ] Add a Google Places Autocomplete widget for the low/no-confidence manual-entry state (currently a plain text address field, no search-assist yet)
-- [ ] Add a GitHub Actions workflow to build + push the image to GHCR (`ghcr.io/fahmiefendy/clipmap`) — `apps/clipmap/docker-compose.yml` expects that image and there's no CI yet (repo already exists at github.com/FahmiEfendy/clipmap) — this is now the only thing left before the app is actually reachable at clipmap.fahmiefendy.dev
 
 ## 🟡 Medium (core v1 features)
 

@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- `.github/workflows/deploy.yml` — manually-triggered (`workflow_dispatch`) build-and-deploy pipeline, matching the electricity-tracker/kei-japanese pattern: builds the Docker image, pushes `latest` + short-SHA tags to `ghcr.io/fahmiefendy/clipmap`, then opens a Cloudflare Access tunnel to the VPS to push the production `.env` and run `deploy.sh clipmap-app`. Repo secrets configured and a deploy run completed successfully — the app is live at clipmap.fahmiefendy.dev.
+
 ### Planned
 - Tier 2 escalation: ephemeral video fetch → ffmpeg → OpenRouter (`gpt-4o-transcribe`) transcription
 - Google Places Autocomplete for the low/no-confidence manual-entry state
