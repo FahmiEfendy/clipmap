@@ -22,6 +22,8 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String? // hashed, only set for credentials sign-up
+  canExtract    Boolean   @default(true) // toggle per-user access to the extraction pipeline (e.g. for test users)
+  isActive      Boolean   @default(true) // set to false to sign the user out entirely (checked every request in the jwt callback)
 
   accounts Account[]
   sessions Session[]

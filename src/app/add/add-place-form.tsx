@@ -62,6 +62,15 @@ export function AddPlaceForm({ initialUrl }: { initialUrl?: string }) {
         >
           {isExtracting ? "Reading…" : "Extract"}
         </button>
+        {isExtracting && (
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <span
+              aria-hidden
+              className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600"
+            />
+            Reading the video and looking up the place — this can take a few seconds…
+          </div>
+        )}
       </div>
 
       {result && (

@@ -11,6 +11,18 @@ export async function runExtraction(tiktokUrl: string): Promise<ExtractionResult
   if (!session?.user?.id) {
     throw new Error("You must be signed in to add a place.");
   }
+
+  // Checked against the live database, not cached in the session/JWT — so
+  // disabling a user's access takes effect on their very next request,
+  // without needing them to sign out and back in.
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { canExtract: true },
+  });
+  if (!user?.canExtract) {
+    throw new Error("Extraction isn't enabled for your account yet.");
+  }
+
   if (!tiktokUrl.includes("tiktok.com")) {
     throw new Error("That doesn't look like a TikTok URL.");
   }

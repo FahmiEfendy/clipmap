@@ -6,7 +6,7 @@ import { login } from "@/app/actions/auth";
 import { PasswordInput } from "@/components/password-input";
 import { GoogleAuthButton } from "@/components/google-auth-button";
 
-export function LoginForm() {
+export function LoginForm({ oauthError }: { oauthError?: string }) {
   const [state, action, pending] = useActionState(login, undefined);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,6 +24,7 @@ export function LoginForm() {
     <>
       <p className="text-center text-lg font-bold">Clipmap</p>
       <h1 className="text-2xl font-semibold">Log in</h1>
+      {oauthError && <p className="text-sm text-red-600">{oauthError}</p>}
       <form action={action} className="flex flex-col gap-4">
         <input
           name="email"

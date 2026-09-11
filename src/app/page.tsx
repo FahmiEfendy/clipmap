@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { auth, signOut } from "@/auth";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { googleMapsUrl } from "@/lib/places";
+import { UserMenu } from "@/components/user-menu";
 
 export default async function HomePage() {
   const session = await auth();
@@ -35,16 +36,7 @@ export default async function HomePage() {
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-6 py-12">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Clipmap</h1>
-        <form
-          action={async () => {
-            "use server";
-            await signOut({ redirectTo: "/" });
-          }}
-        >
-          <button type="submit" className="text-sm text-red-600">
-            Sign out
-          </button>
-        </form>
+        <UserMenu name={session.user.name} email={session.user.email} image={session.user.image} />
       </div>
 
       <form action="/add" method="GET">
@@ -53,52 +45,48 @@ export default async function HomePage() {
           name="url"
           placeholder="Paste a TikTok video URL to find a place"
           required
-          className="w-full rounded border border-gray-300 px-3 py-2"
+          className="mt-4 w-full rounded border border-gray-300 px-3 py-2"
         />
       </form>
 
-      {places.length === 0 ? (
-        <p className="text-gray-500">
-          Nothing saved yet — paste a TikTok link to add your first place.
-        </p>
-      ) : (
+      {places.length > 0 && (
         <ul className="flex flex-col gap-4">
           {places.map((place) => (
-            <li key={place.id} className="flex gap-4 rounded border border-gray-200 p-4">
+            <li key={place.id} className="flex flex-col gap-2 rounded border border-gray-200 p-4">
+              <p className="line-clamp-1 font-medium">{place.name}</p>
               {place.thumbnailUrl && (
                 // eslint-disable-next-line @next/next/no-img-element -- remote TikTok CDN thumbnail
                 <img
                   src={place.thumbnailUrl}
                   alt=""
-                  className="h-20 w-20 flex-none rounded object-cover"
+                  className="h-40 w-full rounded-lg border border-gray-300 object-cover shadow-sm"
                 />
               )}
-              <div className="flex flex-1 flex-col gap-1">
-                <p className="font-medium">{place.name}</p>
-                {place.address && <p className="text-sm text-gray-600">{place.address}</p>}
-                {place.description && (
-                  <p className="line-clamp-2 text-sm text-gray-500">{place.description}</p>
-                )}
-                <div className="flex gap-3 text-sm">
-                  {place.placeId && (
-                    <a
-                      href={googleMapsUrl(place.placeId)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline"
-                    >
-                      View on Google Maps
-                    </a>
-                  )}
+              {place.address && (
+                <p className="line-clamp-1 text-sm text-gray-600">{place.address}</p>
+              )}
+              {place.description && (
+                <p className="line-clamp-2 text-sm text-gray-500">{place.description}</p>
+              )}
+              <div className="flex flex-col gap-1 text-sm">
+                {place.placeId && (
                   <a
-                    href={place.tiktokUrl}
+                    href={googleMapsUrl(place.placeId)}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-gray-500 underline"
+                    className="underline"
                   >
-                    Original TikTok
+                    View on Google Maps
                   </a>
-                </div>
+                )}
+                <a
+                  href={place.tiktokUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-500 underline"
+                >
+                  Original TikTok
+                </a>
               </div>
             </li>
           ))}

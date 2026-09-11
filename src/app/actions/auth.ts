@@ -2,7 +2,7 @@
 
 import bcrypt from "bcryptjs";
 import { AuthError, CredentialsSignin } from "next-auth";
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { isDatabaseUnreachableError } from "@/lib/errors";
 
@@ -100,4 +100,8 @@ export async function login(
 
 export async function loginWithGoogle() {
   await signIn("google", { redirectTo: "/" });
+}
+
+export async function signOutAction() {
+  await signOut({ redirectTo: "/" });
 }

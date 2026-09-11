@@ -82,6 +82,11 @@ export async function extractPlaceFromContent(input: {
       model,
       messages: [{ role: "user", content }],
       response_format: { type: "json_schema", json_schema: EXTRACTION_SCHEMA },
+      // Structured-output support is per provider-endpoint, not per model — the
+      // same model can be served by multiple backends and only some honor
+      // json_schema. This forces OpenRouter to only route to one that does,
+      // instead of silently falling back to one that ignores the schema.
+      provider: { require_parameters: true },
     }),
   });
 
