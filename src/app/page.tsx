@@ -8,7 +8,7 @@ export default async function HomePage() {
 
   if (!session?.user?.id) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-center gap-6 px-4 text-center">
+      <main className="mx-auto flex min-h-screen w-full max-w-2xl flex-col items-center justify-center gap-6 px-6 text-center">
         <h1 className="text-3xl font-semibold">Clipmap</h1>
         <p className="text-gray-600">
           Paste a TikTok link, get a saved, mapped place — no more &ldquo;places to go&rdquo;
@@ -18,7 +18,7 @@ export default async function HomePage() {
           <Link href="/login" className="rounded border border-gray-300 px-4 py-2">
             Log in
           </Link>
-          <Link href="/signup" className="rounded bg-black px-4 py-2 text-white">
+          <Link href="/signup" className="rounded bg-black dark:bg-white dark:text-black px-4 py-2 text-white">
             Sign up
           </Link>
         </div>
@@ -32,25 +32,30 @@ export default async function HomePage() {
   });
 
   return (
-    <main className="mx-auto flex max-w-lg flex-col gap-6 px-4 py-12">
+    <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-6 py-12">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Your places</h1>
-        <div className="flex items-center gap-3 text-sm">
-          <Link href="/add" className="rounded bg-black px-3 py-2 text-white">
-            Add a place
-          </Link>
-          <form
-            action={async () => {
-              "use server";
-              await signOut({ redirectTo: "/" });
-            }}
-          >
-            <button type="submit" className="underline">
-              Sign out
-            </button>
-          </form>
-        </div>
+        <h1 className="text-2xl font-semibold">Clipmap</h1>
+        <form
+          action={async () => {
+            "use server";
+            await signOut({ redirectTo: "/" });
+          }}
+        >
+          <button type="submit" className="text-sm text-red-600">
+            Sign out
+          </button>
+        </form>
       </div>
+
+      <form action="/add" method="GET">
+        <input
+          type="url"
+          name="url"
+          placeholder="Paste a TikTok video URL to find a place"
+          required
+          className="w-full rounded border border-gray-300 px-3 py-2"
+        />
+      </form>
 
       {places.length === 0 ? (
         <p className="text-gray-500">

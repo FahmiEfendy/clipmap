@@ -16,6 +16,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.1.1] — 2026-09-11
+
+### Added
+- `PasswordInput` component (`src/components/password-input.tsx`) — show/hide toggle (eye icon), used on every password field
+- `GoogleAuthButton` component (`src/components/google-auth-button.tsx`) — divider + "Continue with Google", deduplicated and now shown on both `/login` and `/signup` (previously login-only, even though Google sign-in already creates a new account on first use via the Prisma adapter)
+- Signup: retype-password field with live mismatch/length validation — checked on blur/change, submit disabled until valid
+- Home page: a TikTok URL search bar (replacing the old "Add a place" button) that submits to `/add?url=...`, which now prefills and auto-runs extraction on load
+- A large, bold, centered `Clipmap` brand label above the page heading on `/login`, `/signup`, and `/add`, so navigating between pages reads as one app
+- Global error boundary (`src/app/error.tsx`) — an uncaught render failure (e.g. the database going unreachable) now shows a friendly "Something went wrong" screen with a retry button instead of Next's raw dev error overlay, and logs the underlying error
+- `src/lib/errors.ts` — `isDatabaseUnreachableError()`, used to tell infrastructure failures apart from user-input errors
+
+### Fixed
+- **Login/signup showed "Invalid email or password" even when the real cause was the database being unreachable** (e.g. the dev SSH tunnel dropping) — `login`/`signup` now distinguish `CredentialsSignin` (genuinely wrong password) from any other `AuthError`, and `authorize()`/the initial signup lookup log a clear cause instead of a bare Prisma stack trace reaching the console.
+- **Email/name fields were wiped after a failed login or signup attempt** — React resets *uncontrolled* form fields once a Server Action completes (native-form-like behavior). `email` (and `name`, `password`, `confirmPassword`) are now controlled inputs; only `password` is deliberately cleared after a failed login.
+- **Two `useEffect` hooks called `setState` synchronously in the effect body** (password-reset-on-error in `/login`, auto-extract-on-mount in `/add`) — a cascading-render anti-pattern caught by `npm run lint`, not manual review. Fixed the former with React's "adjust state during render" pattern instead of an Effect; fixed the latter by moving the synchronous resets out of the effect path.
+- Inconsistent page width/padding — `/login` and `/signup` had drifted (through several rounds of tightening) to `max-w-md`/`px-3` while `/` and `/add` were still on the original `max-w-lg`/`px-4`. All four pages now share one container: `w-full max-w-2xl px-6`.
+- `/add`'s extraction error message rendered below the "Extract" button instead of next to the field it relates to.
+- Primary buttons (`bg-black`) were nearly invisible in dark mode, blending into the page's near-black background — added `dark:bg-white dark:text-black` so they invert and stay visible against either background.
+- Logged-in users could still open `/login` or `/signup` and see the form — both now check the session server-side and redirect to `/` if already authenticated, mirroring `/add`'s existing pattern (a Server Component wrapper doing the redirect, a Client Component — `login-form.tsx`/`signup-form.tsx` — for the interactive form).
+
+### Notes
+- `AddPlaceForm` had near-identical extraction logic duplicated between the manual "Extract" button handler and the auto-extract-on-mount effect; consolidated into a shared `extract()` helper.
+
+---
+
 ## [0.1.0] — 2026-09-10
 
 ### Added

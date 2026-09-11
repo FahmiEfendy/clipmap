@@ -1,28 +1,38 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { runExtraction, savePlace } from "@/app/actions/places";
 import type { ExtractionResult } from "@/lib/extraction";
 
-export function AddPlaceForm() {
-  const [tiktokUrl, setTiktokUrl] = useState("");
+export function AddPlaceForm({ initialUrl }: { initialUrl?: string }) {
+  const [tiktokUrl, setTiktokUrl] = useState(initialUrl ?? "");
   const [result, setResult] = useState<ExtractionResult | null>(null);
   const [extractError, setExtractError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [isExtracting, startExtracting] = useTransition();
   const [isSaving, startSaving] = useTransition();
 
-  function handleExtract() {
-    setExtractError(null);
-    setResult(null);
+  function extract(url: string) {
     startExtracting(async () => {
       try {
-        setResult(await runExtraction(tiktokUrl));
+        setResult(await runExtraction(url));
       } catch (err) {
         setExtractError(err instanceof Error ? err.message : "Something went wrong.");
       }
     });
   }
+
+  function handleExtract() {
+    setExtractError(null);
+    setResult(null);
+    extract(tiktokUrl);
+  }
+
+  useEffect(() => {
+    if (initialUrl) extract(initialUrl);
+    // Only run once, for the URL the page was loaded with.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleSave(formData: FormData) {
     setSaveError(null);
@@ -36,24 +46,23 @@ export function AddPlaceForm() {
 
   return (
     <>
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2">
         <input
           type="url"
           placeholder="Paste a TikTok video URL"
           value={tiktokUrl}
           onChange={(e) => setTiktokUrl(e.target.value)}
-          className="flex-1 rounded border border-gray-300 px-3 py-2"
+          className="w-full rounded border border-gray-300 px-3 py-2"
         />
+        {extractError && <p className="text-sm text-red-600">{extractError}</p>}
         <button
           onClick={handleExtract}
           disabled={!tiktokUrl || isExtracting}
-          className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+          className="rounded bg-black dark:bg-white dark:text-black px-4 py-2 text-white disabled:opacity-50"
         >
           {isExtracting ? "Reading…" : "Extract"}
         </button>
       </div>
-
-      {extractError && <p className="text-sm text-red-600">{extractError}</p>}
 
       {result && (
         <form
@@ -143,7 +152,7 @@ export function AddPlaceForm() {
           <button
             disabled={isSaving}
             type="submit"
-            className="rounded bg-black px-3 py-2 text-white disabled:opacity-50"
+            className="rounded bg-black dark:bg-white dark:text-black px-3 py-2 text-white disabled:opacity-50"
           >
             {isSaving ? "Saving…" : "Save"}
           </button>

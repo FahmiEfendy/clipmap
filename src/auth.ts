@@ -4,6 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { isDatabaseUnreachableError } from "@/lib/errors";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -21,7 +22,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const password = credentials?.password as string | undefined;
         if (!email || !password) return null;
 
-        const user = await prisma.user.findUnique({ where: { email } });
+        let user;
+        try {
+          user = await prisma.user.findUnique({ where: { email } });
+        } catch (err) {
+          if (isDatabaseUnreachableError(err)) {
+            console.error(
+              "[auth] authorize() couldn't reach the database — is the SSH tunnel to the homeserver up?",
+              err
+            );
+          }
+          // Rethrow so this surfaces as a CallbackRouteError, distinct from a
+          // deliberate `return null` (wrong credentials) — the caller in
+          // src/app/actions/auth.ts tells the two apart.
+          throw err;
+        }
         if (!user?.password) return null;
 
         const passwordMatches = await bcrypt.compare(password, user.password);
