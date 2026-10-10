@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 - `.github/workflows/deploy.yml` — manually-triggered (`workflow_dispatch`) build-and-deploy pipeline, matching the electricity-tracker/kei-japanese pattern: builds the Docker image, pushes `latest` + short-SHA tags to `ghcr.io/fahmiefendy/clipmap`, then opens a Cloudflare Access tunnel to the VPS to push the production `.env` and run `deploy.sh clipmap-app`. Repo secrets configured and a deploy run completed successfully — the app is live at clipmap.fahmiefendy.dev.
 
+### Fixed
+- **Email/password login on production failed with `UntrustedHost`** — Auth.js rejects any host it can't independently verify by default (protection against host-header injection), which breaks the moment the app sits behind a reverse proxy and only ever sees `127.0.0.1:3000` internally. Added `trustHost: true` to the NextAuth config.
+- **Google sign-in on production failed at the account-selection step with a Google-side `invalid_request` — "doesn't comply with Google's OAuth 2.0 policy for keeping apps secure"** — Google disallows a raw IP address as an OAuth `redirect_uri` host. `signIn("google")`, called from a Server Action, builds that redirect URI before any request-scoped host is available and was falling back to the container's own bind address (`http://0.0.0.0:3000`), which `trustHost` alone doesn't cover. Added `AUTH_URL` as a required production env var (`.env.example`), set to the canonical `https://clipmap.fahmiefendy.dev` origin.
+
 ### Planned
 - Tier 2 escalation: ephemeral video fetch → ffmpeg → OpenRouter (`gpt-4o-transcribe`) transcription
 - Google Places Autocomplete for the low/no-confidence manual-entry state
